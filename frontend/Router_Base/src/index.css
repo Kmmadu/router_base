@@ -1,7 +1,24 @@
 @import "tailwindcss";
 
 body {
-  background: #0a0a0a;
-  color: white;
+  background: var(--color-secondary);
   overflow-x: hidden;
+}
+
+*,
+html {
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --color-primary: #1a78e8;
+  --color-primary-500: #1358b8;
+
+  --color-secondary: #f5f5f5;
+  --color-success-500: green;
+  --color-error-500: #c20;
+  --color-warning-500: #fbbf24;
+  --color-info-500: #3b82f6;
+  --color-shadow-200: rgba(0, 0, 0, 0.5);
 }

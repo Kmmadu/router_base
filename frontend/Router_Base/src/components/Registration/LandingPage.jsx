@@ -13,7 +13,7 @@ const LandingPage = () => {
       <motion.img
         src="/router.png"
         alt="Router"
-        className="w-40 md:w-52 lg:w-64 h-auto mt-10 absolute top-5 right-5 md:bottom-5 md:right-5 lg:bottom-5 lg:right-5 rotate-45"
+        className="w-40 md:w-52 lg:w-64 h-auto mt-10 absolute top-5 right-5 md:bottom-5 md:right-5 lg:bottom-5 lg:right-5"
         initial={{ y: 0 }}
         animate={{ y: [0, -20, 0] }}
         transition={{

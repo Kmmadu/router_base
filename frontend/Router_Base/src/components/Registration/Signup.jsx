@@ -1,23 +1,69 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../../../supabaseClient";
+import Toast from "../Toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isNameFocused, setIsNameFocused] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [toast, setToast] = useState(false);
+  const navigate = useNavigate();
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 10000);
+  };
+
+  const isValidEmailFormat = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSignUp = async () => {
-    const { user, error } = await supabase.auth.signUp({
-      email,
-      password,
-      name,
-    });
-    if (error) {
+    if (!name || !email || !password) {
+      showToast("All fields are required!", "error");
+      return;
+    }
+
+    if (!isValidEmailFormat(email)) {
+      showToast("Invalid email format!", "warning");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: "http://localhost:4150/profile", // Redirect to profile page after email confirmation
+        },
+      });
+
+      if (error) {
+        setError(error.message);
+        showToast("Signup failed. Please try again.", "error");
+      } else {
+        showToast("Signup successful! Redirecting to profile...", "success");
+
+        // Redirect to profile page immediately after signup
+        navigate("/profile");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error.message);
       setError(error.message);
-    } else alert("Check your email for confirmation");
+      showToast("An unexpected error occurred.", "error");
+    }
   };
 
   return (
@@ -39,29 +85,79 @@ const Signup = () => {
 
         {/* Input Fields */}
         <div className="space-y-4">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            placeholder="Username"
-            className="w-full p-3 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
-          />
+          {/* Name */}
+          <div className="relative w-full">
+            <label
+              className={`absolute left-3 transition-all duration-200 ${
+                isNameFocused || name
+                  ? "top-1 text-xs text-[#1a73e8]"
+                  : "top-4 text-gray-400 text-base"
+              }`}
+            >
+              Username
+            </label>
 
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            placeholder="Email"
-            className="w-full p-3 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
-          />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              className="w-full p-3 pt-5 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
+              onFocus={() => setIsNameFocused(true)}
+              onBlur={() => setIsNameFocused(false)}
+            />
+          </div>
 
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
-          />
+          {/* Email */}
+          <div className="relative w-full">
+            <label
+              className={`absolute left-3 transition-all duration-200 ${
+                isEmailFocused || email
+                  ? "top-1 text-xs text-[#1a73e8]"
+                  : "top-4 text-gray-400 text-base"
+              }`}
+            >
+              Email
+            </label>
+
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              className="w-full p-3 pt-5 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
+              onFocus={() => setIsEmailFocused(true)}
+              onBlur={() => setIsEmailFocused(false)}
+            />
+          </div>
+
+          {/* Password */}
+          <div className="relative w-full">
+            <label
+              className={`absolute left-3 transition-all duration-200 ${
+                isPasswordFocused || password
+                  ? "top-1 text-xs text-[#1a73e8]"
+                  : "top-4 text-gray-400 text-base"
+              }`}
+            >
+              Password
+            </label>
+
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? "text" : "password"}
+              className="w-full p-3 pt-5 bg-transparent text-black rounded-lg border border-[#1a73e8] focus:outline-none focus:ring-2 focus:ring-[#1a73e8] shadow-[0px_0px_8px_rgba(0,0,0,0.5)]"
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
+            />
+
+            <button
+              type="button"
+              className="absolute inset-y-0 right-3 flex cursor-pointer items-center text-gray-600"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
         </div>
 
         {/* Signup Button */}
@@ -73,17 +169,14 @@ const Signup = () => {
         >
           Sign Up
         </motion.button>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
         {error && <p>{error}</p>}
-
-        {/* Google Sign-in Button */}
-        <motion.button
-          className="w-full mt-4 py-3 bg-white text-[#121212] font-semibold border rounded-lg flex justify-center items-center gap-2 shadow-lg cursor-pointer hover:bg-gray-200"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <img src="/google-icon.jpeg" alt="Google" className="w-5 h-5" />
-          Sign Up with Google
-        </motion.button>
 
         {/* Already have an account */}
         <p className="mt-4 text-center text-[#fbbc05]">
