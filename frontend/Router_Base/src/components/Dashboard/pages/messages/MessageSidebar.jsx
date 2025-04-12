@@ -1,12 +1,14 @@
 import { useMessage } from "../../../../context/useMessage";
+import { useDarkModeContext } from "../../../../context/DarkModeContext";
 
 const MessageSidebar = ({ users = [], onOpen }) => {
   const { setSelectedChat, openChat } = useMessage();
+  const { isDarkMode } = useDarkModeContext();
 
   return (
-    <div className="">
-      <div className="p-4 flex items-center justify-between shadow-xl bg-white">
-        <h2 className="text-xl font-semibold">Messages</h2>
+    <div className="bg-[var(--background)] ">
+      <div className="p-4 flex items-center justify-between shadow-xl ">
+        <h2 className="text-xl font-semibold text-primary">Messages</h2>
       </div>
       <div className="flex-1 h-[70vh] overflow-y-auto space-y-2 p-4 ">
         {users.length === 0 ? (
@@ -22,7 +24,7 @@ const MessageSidebar = ({ users = [], onOpen }) => {
                 openChat(user);
                 onOpen?.();
               }}
-              className={`flex items-center space-x-3 p-3 rounded-md cursor-pointer transition-all hover:bg-gray-200`}
+              className={`flex items-center space-x-3 p-3 rounded-md cursor-pointer transition-all hover:bg-primary`}
             >
               <img
                 src={user.image_src}
@@ -30,7 +32,7 @@ const MessageSidebar = ({ users = [], onOpen }) => {
                 className="w-12 h-12 rounded-full border"
               />
               <div className="flex flex-col">
-                <span className="font-medium">{user.name}</span>
+                <span className="font-medium ">{user.name}</span>
                 <span className="text-sm text-gray-500">
                   Last seen recently
                 </span>

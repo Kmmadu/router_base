@@ -1,24 +1,49 @@
 @import "tailwindcss";
 
+@theme {
+  /* Light Theme */
+  --light-background-color: #f5f5f5;
+  --text-color-light: #000000;
+  --sidebar-border-light: #e5e7eb;
+
+  /* Dark Theme */
+  --dark-background-color: #181818;
+  --text-color-dark: #ffffff;
+  --sidebar-border-dark: #1a1a1a;
+
+  /* Shared Colors */
+  --color-primary: #1a78e8;
+  --color-primary-500: #1358b8;
+  --color-success-500: #10b981;
+  --color-error-500: #ef4444;
+  --color-warning-500: #f59e0b;
+  --color-info-500: #3b82f6;
+}
+
+:root {
+  --background: var(--light-background-color);
+  --text-color: var(--text-color-light);
+  --sidebar-border: var(--sidebar-border-light);
+  --card-bg: linear-gradient(to bottom right, #e5e7eb, #f3f4f6);
+}
+
+.dark {
+  --background: var(--dark-background-color);
+  --text-color: var(--text-color-dark);
+  --sidebar-border: var(--sidebar-border-dark);
+  --card-bg: linear-gradient(to bottom right, #1f2937, #111827);
+}
+
+/* Base Styles */
 body {
-  background: var(--color-secondary);
+  background: var(--background);
+  color: var(--text-color);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 *,
 html {
   overscroll-behavior: none;
   scroll-behavior: smooth;
-}
-
-@theme {
-  --color-primary: #1a78e8;
-  --color-primary-500: #1358b8;
-
-  --color-secondary: #f5f5f5;
-  --color-success-500: green;
-  --color-error-500: #c20;
-  --color-warning-500: #fbbf24;
-  --color-info-500: #3b82f6;
-  --color-shadow-200: rgba(0, 0, 0, 0.5);
 }

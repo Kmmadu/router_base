@@ -8,7 +8,7 @@ const Messages = () => {
   const { selectedChat, showWindow, setShowWindow } = useMessage();
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4 md:p-6 bg-[var(--background)] h-[91vh]">
       {showWindow ? (
         <MessageWindow onClose={() => setShowWindow(false)} />
       ) : (

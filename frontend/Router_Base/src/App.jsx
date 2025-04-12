@@ -18,6 +18,7 @@ import Messages from "./components/Dashboard/pages/messages/Messages";
 import { UserProvider } from "./context/useUser";
 import { MessageProvider } from "./context/MessageContext";
 import SelectedUser from "./components/Dashboard/modals/SelectedUser";
+import { DarkModeProvider } from "./context/DarkModeContext";
 
 const users = [
   {
@@ -130,7 +131,7 @@ const DashboardLayout = ({ children }) => {
           users={users}
         />
 
-        <main className="p-4 md:p-6">{children}</main>
+        <main className="">{children}</main>
         <SelectedUser />
       </div>
     </div>
@@ -206,9 +207,11 @@ function App() {
   return (
     <UserProvider>
       <MessageProvider>
-        <Router>
-          <AnimatedRoutes />
-        </Router>
+        <DarkModeProvider>
+          <Router>
+            <AnimatedRoutes />
+          </Router>
+        </DarkModeProvider>
       </MessageProvider>
     </UserProvider>
   );

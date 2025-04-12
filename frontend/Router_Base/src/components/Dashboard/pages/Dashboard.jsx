@@ -56,28 +56,25 @@ const Dashboard = ({ users }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 dark:bg-[var(--background)] p-4 md:p-6 text-[--text-color] ">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         {stats.map((stat) => (
           <div
             key={stat.name}
-            className="bg-gradient-to-br from-gray-200 to-gray-100 overflow-hidden shadow-md transition-transform duration-300 hover:scale-[1.02] shadow-black/50 rounded-lg"
+            className="bg-[var(--card-bg)] overflow-hidden shadow-md transition-transform duration-300 hover:scale-[1.02] shadow-black/50 rounded-lg"
           >
             <div className="p-5">
               <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <stat.icon
-                    className="h-6 w-6 text-gray-400"
-                    aria-hidden="true"
-                  />
+                <div className="flex-shrink-0 text-gray-500">
+                  <stat.icon className="h-6 w-6 " aria-hidden="true" />
                 </div>
                 <div className="ml-2 md:ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm md:text-base font-medium text-black truncate w-full">
+                    <dt className="text-sm md:text-base font-medium  truncate w-full">
                       {stat.name}
                     </dt>
                     <dd>
-                      <div className="text-lg font-semibold text-black ">
+                      <div className="text-lg font-semibold text-gray-500  ">
                         {stat.value}
                       </div>
                     </dd>
@@ -87,7 +84,7 @@ const Dashboard = ({ users }) => {
             </div>
             <div className={` py-3 text-right`}>
               <span
-                className={`text-xs font-medium text-black p-5 rounded-tl-4xl  ${
+                className={`text-xs font-medium  p-5 rounded-tl-4xl  ${
                   stat.changeType === "positive"
                     ? "bg-success-500 "
                     : "bg-error-500 "
@@ -100,9 +97,9 @@ const Dashboard = ({ users }) => {
         ))}
       </div>
 
-      <div className="bg-[#ededed]  shadow-lg rounded-lg p-6 px-3">
+      <div className="bg-[var(--card-bg)]  shadow-lg rounded-lg p-6 px-3">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-medium text-gray-900 ">Recent Users</h2>
+          <h2 className="text-lg font-medium ">Recent Users</h2>
           <NavLink
             to="/customers"
             className="text-sm font-medium text-primary-600 hover:text-primary-500 cursor-pointer "

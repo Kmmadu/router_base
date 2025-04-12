@@ -12,8 +12,11 @@ import {
   SunIcon,
   ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import { useDarkModeContext } from "../../../context/DarkModeContext";
 
-const Sidebar = ({ darkMode, setDarkMode, sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
+
   const navItems = [
     { name: "Dashboard", icon: HomeIcon, path: "/dashboard" },
     { name: "Customers", icon: UsersIcon, path: "/customers" },
@@ -29,39 +32,29 @@ const Sidebar = ({ darkMode, setDarkMode, sidebarOpen, setSidebarOpen }) => {
     <div
       className={`fixed inset-y-0 left-0 transform ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:relative md:translate-x-0 transition-transform duration-200 ease-in-out z-30 shadow-lg shadow-black/50`}
+      } md:relative md:translate-x-0 transition-transform duration-200 ease-in-out z-30 shadow-2xl shadow-[rgba(0,0,0,0.9)] dark:shadow[rgba(255,255,255,0.1)]`}
     >
-      <div
-        className={`flex flex-col h-full w-64 ${
-          darkMode ? "bg-gray-800" : "bg-white"
-        } border-r ${
-          darkMode ? "border-gray-700" : "border-gray-200"
-        } shadow-lg`}
-      >
-        <div className="flex items-center justify-between p-4 shadow-sm">
+      <div className="flex flex-col h-full w-64 bg-[var(--background)] border-r border-[var(--sidebar-border)]">
+        <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center ">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <img
                 src="https://picsum.photos/id/276/50"
                 alt="R_B"
                 className="rounded-full"
               />
             </div>
-            <span
-              className={`text-xl font-semibold ${
-                darkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
+            <span className="text-xl font-semibold text-[var(--text-color)]">
               Router_Base
             </span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden p-1 rounded-lg hover:bg-gray-500 cursor-pointer"
+            className="md:hidden p-1 rounded-lg hover:bg-gray-500/20 cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-black hover:text-error-500"
+              className="h-6 w-6 text-[var(--text-color)] hover:text-[var(--color-error-500)]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -84,8 +77,8 @@ const Sidebar = ({ darkMode, setDarkMode, sidebarOpen, setSidebarOpen }) => {
               className={({ isActive }) =>
                 `flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? "bg-primary-500 text-primary-600 "
-                    : "hover:bg-primary hover:text-white hover:shadow-sm hover:shadow-black/50"
+                    ? "bg-[var(--color-primary-500)] text-white"
+                    : "text-[var(--text-color)] hover:bg-[var(--color-primary)] hover:text-white"
                 }`
               }
             >
@@ -95,12 +88,12 @@ const Sidebar = ({ darkMode, setDarkMode, sidebarOpen, setSidebarOpen }) => {
           ))}
         </nav>
 
-        <div className="p-4 border-t dark:border-gray-700 space-y-2">
+        <div className="p-4 border-t border-[var(--sidebar-border)] space-y-2">
           <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="flex items-center w-full px-4 py-3 rounded-lg hover:bg-primary  text-gray-700 cursor-pointer"
+            onClick={toggleDarkMode}
+            className="flex items-center w-full px-4 py-3 rounded-lg hover:bg-[var(--color-primary)] text-[var(--text-color)] hover:text-white transition-colors duration-200 cursor-pointer"
           >
-            {darkMode ? (
+            {isDarkMode ? (
               <>
                 <SunIcon className="w-5 h-5 mr-3" />
                 <span>Light Mode</span>
@@ -113,7 +106,7 @@ const Sidebar = ({ darkMode, setDarkMode, sidebarOpen, setSidebarOpen }) => {
             )}
           </button>
 
-          <button className="flex items-center w-full px-4 py-3 rounded-lg hover:bg-primary   cursor-pointer">
+          <button className="flex items-center w-full px-4 py-3 rounded-lg hover:bg-[var(--color-primary)] text-[var(--text-color)] hover:text-white transition-colors duration-200">
             <ArrowLeftEndOnRectangleIcon className="w-5 h-5 mr-3" />
             <span>Logout</span>
           </button>

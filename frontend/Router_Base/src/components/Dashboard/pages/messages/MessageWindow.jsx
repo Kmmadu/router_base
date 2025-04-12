@@ -21,12 +21,12 @@ const MessageWindow = ({ onClose }) => {
   }, [messages[selectedChat.id]]);
 
   return (
-    <div className="flex flex-col h-[80vh] bg-gray-50">
+    <div className="flex flex-col h-[80vh] ">
       {/* Chat Header */}
-      <div className="p-3 flex items-center sticky top-0 bg-white shadow-lg">
+      <div className="p-3 flex items-center sticky top-0 shadow-lg">
         <button
           onClick={onClose}
-          className="p-2 rounded-md hover:bg-gray-200 cursor-pointer"
+          className="p-2 rounded-md hover:bg-gray-500 cursor-pointer"
         >
           <ArrowLeft size={24} />
         </button>
@@ -39,7 +39,7 @@ const MessageWindow = ({ onClose }) => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 overflow-y-auto p-4 bg-primary-500 space-y-2">
         {/* Change the condition to isLoading when backend */}
         {
           /* !newMessage ? (
@@ -66,7 +66,7 @@ const MessageWindow = ({ onClose }) => {
       </div>
 
       {/* Message Input */}
-      <div className="p-3 border-t flex items-center bg-white sticky bottom-0 shadow-md ">
+      <div className="p-3  flex items-center sticky bottom-0 shadow-md ">
         {showEmojiPicker && (
           <div className="absolute bottom-14 left-3 bg-white shadow-lg rounded-lg">
             <EmojiPicker onEmojiClick={addEmoji} />
@@ -75,7 +75,7 @@ const MessageWindow = ({ onClose }) => {
 
         <button
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="p-2 text-gray-500 hover:text-gray-700 transition"
+          className="p-2 text-gray-500 hover:text-gray-700 transition cursor-pointer"
         >
           <Smile size={24} />
         </button>
@@ -101,7 +101,7 @@ const MessageWindow = ({ onClose }) => {
               setNewMessage("");
             }
           }}
-          className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition flex items-center justify-center"
+          className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 cursor-pointer transition flex items-center justify-center"
         >
           <Send size={20} />
         </button>

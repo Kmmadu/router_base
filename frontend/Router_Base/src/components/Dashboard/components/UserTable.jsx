@@ -14,7 +14,10 @@ const UserTable = ({ limit, users }) => {
     direction: "ascending",
     activeFirst: false,
   });
+  const [currentPage, setCurrentPage] = useState(1);
   const { setSelectedUser } = useUser();
+
+  const pageSize = 5;
 
   const sortedUsers = useMemo(() => {
     let sortableUsers = [...users];
@@ -42,6 +45,14 @@ const UserTable = ({ limit, users }) => {
     return sortableUsers;
   }, [users, sortConfig]);
 
+  const totalPages = Math.ceil(sortedUsers.length / pageSize);
+
+  const paginatedUsers = useMemo(() => {
+    if (limit) return sortedUsers.slice(0, limit);
+    const start = (currentPage - 1) * pageSize;
+    return sortedUsers.slice(start, start + pageSize);
+  }, [sortedUsers, limit, currentPage]);
+
   const requestSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -57,18 +68,16 @@ const UserTable = ({ limit, users }) => {
     }));
   };
 
-  const displayedUsers = limit ? sortedUsers.slice(0, limit) : sortedUsers;
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Active":
-        return "bg-success-500 text-secondary ";
+        return "bg-success-500 text-secondary dark:bg-green-600 dark:text-white";
       case "Pending":
-        return "bg-warning-500 text-black ";
+        return "bg-warning-500 text-black dark:bg-yellow-400 dark:text-black";
       case "Inactive":
-        return "bg-error-500 text-secondary ";
+        return "bg-error-500 text-secondary dark:bg-red-600 dark:text-white";
       default:
-        return "bg-gray-100 text-gray-800 ";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white";
     }
   };
 
@@ -80,185 +89,150 @@ const UserTable = ({ limit, users }) => {
   };
 
   return (
-    <div className="overflow-x-auto overflow-y-auto max-h-[27rem] rounded-sm border border-gray-200 shadow-sm">
-      <table className="min-w-full divide-y divide-black">
-        <thead className="bg-gray-50 ">
-          <tr>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("id")}
-            >
-              ID{" "}
-              {sortConfig.key === "id" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("name")}
-            >
-              Name{" "}
-              {sortConfig.key === "name" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("email")}
-            >
-              Email{" "}
-              {sortConfig.key === "email" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("location")}
-            >
-              Location{" "}
-              {sortConfig.key === "location" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("ip")}
-            >
-              IP Address{" "}
-              {sortConfig.key === "ip" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("router_info")}
-            >
-              Router Model{" "}
-              {sortConfig.key === "router_info" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("role")}
-            >
-              Role{" "}
-              {sortConfig.key === "role" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-              onClick={() => requestSort("status")}
-            >
-              Status{" "}
-              {sortConfig.key === "status" && (
-                <span>{sortConfig.direction === "ascending" ? "↑" : "↓"}</span>
-              )}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  requestActiveFirst();
-                }}
-                className="ml-2 text-xs"
+    <>
+      <div className="overflow-x-auto overflow-y-auto max-h-[27.5rem] rounded-md border border-gray-200 shadow-sm">
+        <table className="min-w-full divide-y divide-black dark:divide-gray-200">
+          <thead className="bg-gray-50 dark:bg-black/50">
+            <tr>
+              {[
+                "id",
+                "name",
+                "email",
+                "location",
+                "ip",
+                "router_info",
+                "role",
+                "status",
+              ].map((key) => (
+                <th
+                  key={key}
+                  onClick={() => requestSort(key)}
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-400"
+                >
+                  {key.replace("_", " ").toUpperCase()}{" "}
+                  {sortConfig.key === key && (
+                    <span>
+                      {sortConfig.direction === "ascending" ? "↑" : "↓"}
+                    </span>
+                  )}
+                  {key === "status" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        requestActiveFirst();
+                      }}
+                      className="ml-2 text-xs"
+                    >
+                      {sortConfig.activeFirst ? "★" : "☆"}
+                    </button>
+                  )}
+                </th>
+              ))}
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-[var(--background)] divide-y divide-black dark:divide-gray-700">
+            {paginatedUsers.map((user) => (
+              <tr
+                key={user.id}
+                className=" transition-colors duration-300 ease-in-out"
+                onClick={() => setSelectedUser(user)}
               >
-                {sortConfig.activeFirst ? "★" : "☆"}
-              </button>
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y-black divide-black overflow-auto">
-          {displayedUsers.map((user) => (
-            <tr
-              key={user.id}
-              className="hover:bg-gray-200 transition-colors"
-              onClick={() => {
-                setSelectedUser(user);
-              }}
-            >
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {user.id}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <img
-                    src={user.image_src}
-                    alt={user.name}
-                    className="flex-shrink-0 h-10 w-10 rounded-full shadow-lg shadow-[rgba(0,0,0,0.5)] flex items-center justify-center font-bold"
-                  />
-                  <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      {user.name}
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  {user.id}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <img
+                      src={user.image_src}
+                      alt={user.name}
+                      className="flex-shrink-0 h-10 w-10 rounded-full shadow-lg"
+                    />
+                    <div className="ml-4">
+                      <div className="text-sm font-medium">{user.name}</div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.email}
-              </td>
-              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-                {user.location}
-              </td>
-              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-                {hiddenUsers[user.id] ? "****" : user.ip}
-              </td>
-              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-                {hiddenUsers[user.id] ? "****" : user.router_info}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.role}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                    user.status
-                  )}`}
-                >
-                  {user.status}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div className="flex justify-end space-x-2">
-                  <button
-                    className="p-1 rounded-md text-black cursor-pointer hover:bg-gray-50"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleVisibility(user.id);
-                    }}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {user.email}
+                </td>
+                <td className="px-6 py-4 text-sm whitespace-nowrap">
+                  {user.location}
+                </td>
+                <td className="px-6 py-4 text-sm whitespace-nowrap">
+                  {hiddenUsers[user.id] ? "****" : user.ip}
+                </td>
+                <td className="px-6 py-4 text-sm whitespace-nowrap">
+                  {hiddenUsers[user.id] ? "****" : user.router_info}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {user.role}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                      user.status
+                    )}`}
                   >
-                    {hiddenUsers[user.id] ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-500" />
-                    )}
-                  </button>
-                  <button className="p-1 rounded-md text-warning-500 cursor-pointer hover:text-yellow-400 hover:bg-yellow-50">
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button className="p-1 rounded-md text-error-500 cursor-pointer hover:text-red-400 hover:bg-red-50">
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                    {user.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      className="p-1 rounded-md text-black dark:text-white hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-700"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleVisibility(user.id);
+                      }}
+                    >
+                      {hiddenUsers[user.id] ? (
+                        <EyeSlashIcon className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+                      )}
+                    </button>
+                    <button className="p-1 rounded-md text-yellow-600 dark:text-yellow-400 hover:text-yellow-500 hover:bg-yellow-50 cursor-pointer dark:hover:bg-yellow-900">
+                      <PencilIcon className="h-5 w-5" />
+                    </button>
+                    <button className="p-1 rounded-md text-red-600 dark:text-red-400 hover:text-red-500 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900">
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination Controls */}
+      {!limit && totalPages > 1 && (
+        <div className="flex justify-between items-center mt-4 text-sm">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-primary text-black rounded disabled:opacity-50 cursor-pointer"
+          >
+            Previous
+          </button>
+          <span className="">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 bg-primary text-black  rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 
